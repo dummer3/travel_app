@@ -1,0 +1,24 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+
+# Expose http & https server port
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+COPY ["travel_back/travel_back.csproj", "travel_back/"]
+RUN dotnet restore "travel_back/travel_back.csproj"
+COPY . .
+WORKDIR "/src/travel_back"
+RUN dotnet build "travel_back.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "travel_back.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "travel_back.dll"]
+
+builder.Services.AddDbContext<Context>(opt => opt.UseSqlServer("ConnectionStrings:DefaultConnection"));
