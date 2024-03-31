@@ -1,0 +1,18 @@
+﻿version: "1"
+services:
+  api:
+    build: .
+    container_name: "travel_API"
+    ports:
+      - "32770:80"
+      - "32771:443"
+    depends_on:
+      - database
+  database:
+    image: "mcr.microsoft.com/mssql/server"
+    container_name: "travel_database"
+    environment:
+      - "ACCEPT_EULA=Y"
+      - "SA_PASSWORD=SQL_Travel1"
+    ports:
+      - "1433:1433"

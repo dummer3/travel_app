@@ -1,0 +1,16 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: travel-service
+spec:
+  template:
+    spec:
+      containers:
+      - image: europe-west2-docker.pkg.dev/travel-387014/travel-database/database-img@sha256:6b539ea3c71273dcbf9db5affef8b53444dc30d1976feaf9045c4e2f65925c5b
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          value: SQL_Travel1
